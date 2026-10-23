@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abdullah | Designer & Developer Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#00f2fe',
+                            blue: '#4facfe',
+                            purple: '#7f00ff',
+                            magenta: '#e100ff',
+                            dark: '#0a0d14',
+                            card: '#121824',
+                            border: 'rgba(255, 255, 255, 0.08)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Three.js Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #06090e;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        
+        .glass-panel {
+            background: rgba(18, 24, 38, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0, 242, 254, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .glow-text-cyan {
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+        }
+
+        .glow-button {
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glow-button:hover {
+            box-shadow: 0 0 35px rgba(0, 242, 254, 0.6);
+            transform: translateY(-2px);
+        }
+
+        canvas {
+            outline: none;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #06090e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-black">
+
+    <!-- Background Ambient Glows -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[140px]"></div>
+        <div class="absolute top-[40%] right-[-10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px]"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[150px]"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#home" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-500 to-purple-600 p-[1px] transition-transform duration-300 group-hover:scale-105">
+                    <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center font-bold text-lg text-cyan-400 font-mono">
+                        A
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold tracking-wide text-white text-base">ABDULLAH</span>
+                    <span class="text-[10px] text-cyan-400 font-mono tracking-widest uppercase">Portfolio</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-1 glass-panel px-4 py-1.5 rounded-full border border-white/10 shadow-2xl">
+                <a href="#home" class="px-4 py-2 text-xs font-medium text-slate-300 hover:text-cyan-400 transition-colors">Home</a>
+                <a href="#about" class="px-4 py-2 text-xs font-medium text-slate-300 hover:text-cyan-400 transition-colors">About</a>
+                <a href="#services" class="px-4 py-2 text-xs font-medium text-slate-300 hover:text-cyan-400 transition-colors">Services</a>
+                <a href="#skills" class="px-4 py-2 text-xs font-medium text-slate-300 hover:text-cyan-400 transition-colors">Skills</a>
+                <a href="#projects" class="px-4 py-2 text-xs font-medium text-slate-300 hover:text-cyan-400 transition-colors">Projects</a>
+                <a href="#why-me" class="px-4 py-2 text-xs font-medium text-slate-300 hover:text-cyan-400 transition-colors">Why Me</a>
+            </nav>
+
+            <a href="#contact" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-500 glow-button">
+                <span>Let's Work Together</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menu-btn" class="md:hidden p-2 text-slate-300 hover:text-white glass-panel rounded-lg">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Dropping Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-b border-white/10 px-6 py-4 flex flex-col gap-3">
+            <a href="#home" class="mobile-link text-slate-300 hover:text-cyan-400 text-sm py-1">Home</a>
+            <a href="#about" class="mobile-link text-slate-300 hover:text-cyan-400 text-sm py-1">About</a>
+            <a href="#services" class="mobile-link text-slate-300 hover:text-cyan-400 text-sm py-1">Services</a>
+            <a href="#skills" class="mobile-link text-slate-300 hover:text-cyan-400 text-sm py-1">Skills</a>
+            <a href="#projects" class="mobile-link text-slate-300 hover:text-cyan-400 text-sm py-1">Projects</a>
+            <a href="#why-me" class="mobile-link text-slate-300 hover:text-cyan-400 text-sm py-1">Why Me</a>
+            <a href="#contact" class="mobile-link text-slate-300 hover:text-cyan-400 text-sm py-1">Contact</a>
+        </div>
+    </header>
+
+    <!-- SECTION 1: HERO -->
+    <section id="home" class="relative min-h-screen pt-28 pb-16 flex items-center justify-center z-10 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left Info Column -->
+            <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-cyan-500/30 text-cyan-400 text-xs font-mono tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    DESIGNER & DEVELOPER
+                </div>
+                
+                <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight text-white">
+                    Hi, I'm <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 glow-text-cyan">Abdullah</span> 👋
+                </h1>
+                
+                <p class="text-xl sm:text-2xl font-semibold text-slate-200">
+                    I Turn Creative Ideas Into Digital Experiences.
+                </p>
+                
+                <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                    I’m a creative Designer & Developer with 2 years of experience helping businesses build a strong online presence through modern designs, engaging content, and smart digital solutions.
+                </p>
+
+                <!-- Skill Badges -->
+                <div class="flex flex-wrap justify-center lg:justify-start gap-2 pt-2">
+                    <span class="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-slate-300 text-xs font-mono">Creative Design</span>
+                    <span class="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-slate-300 text-xs font-mono">Web Development</span>
+                    <span class="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-slate-300 text-xs font-mono">Digital Marketing</span>
+                    <span class="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-slate-300 text-xs font-mono">AI Solutions</span>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                    <a href="#projects" class="w-full sm:w-auto px-7 py-3.5 rounded-xl font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 glow-button flex items-center justify-center gap-2">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                        <span>View My Work</span>
+                    </a>
+                    <a href="#contact" class="w-full sm:w-auto px-7 py-3.5 rounded-xl font-semibold text-white glass-panel border border-white/20 hover:border-cyan-400/50 hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="message-square" class="w-4 h-4 text-cyan-400"></i>
+                        <span>Let's Work Together</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right 3D Interactive Canvas Column -->
+            <div class="lg:col-span-6 relative flex flex-col items-center justify-center">
+                <div class="w-full h-[480px] sm:h-[550px] relative rounded-3xl overflow-hidden glass-panel border border-white/10 shadow-2xl">
+                    
+                    <!-- 3D Hologram Container -->
+                    <div id="three-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+                    <!-- Overlay Controls Bar -->
+                    <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between glass-panel px-4 py-2.5 rounded-xl text-xs border border-white/10 backdrop-blur-md">
+                        <div class="flex items-center gap-2 text-slate-300 font-mono">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
+                            <span>3D Interactive Card</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="flip-card-btn" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 transition-colors flex items-center gap-1.5 font-mono">
+                                <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                                <span>Flip Card</span>
+                            </button>
+                            <button id="reset-cam-btn" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition-colors flex items-center gap-1 font-mono">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                                <span>Reset</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Instruction Badge -->
+                    <div class="absolute top-4 left-4 glass-panel px-3 py-1 rounded-full text-[11px] font-mono text-slate-400 border border-white/10 pointer-events-none flex items-center gap-1.5">
+                        <i data-lucide="mouse-pointer" class="w-3 h-3 text-cyan-400"></i>
+                        <span>Drag to tilt · Hover to activate</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 2: ABOUT ME -->
+    <section id="about" class="py-24 relative z-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-3xl mx-auto text-center space-y-4 mb-12">
+                <span class="text-xs font-mono text-cyan-400 tracking-widest uppercase">02. Introduction</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-white">About Me</h2>
+                <div class="w-16 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6 text-slate-300 leading-relaxed">
+                    <p class="text-lg text-slate-200">
+                        I'm <span class="text-cyan-400 font-semibold">Abdullah</span>, a passionate Designer & Developer with 2 years of experience creating modern designs and digital solutions for businesses and brands.
+                    </p>
+                    <p>
+                        I enjoy turning ideas into clean, attractive, and useful digital experiences. My work includes social media design, YouTube thumbnails, website design and development, digital marketing, video editing, and AI-powered solutions.
+                    </p>
+                    <p>
+                        My goal is simple: <strong class="text-white">help businesses stand out, connect with their audience, and grow online</strong> through creative ideas and smart technology.
+                    </p>
+                    <p class="border-l-2 border-cyan-400 pl-4 italic text-slate-400">
+                        "I believe in quality work, clear communication, continuous learning, and building long-term relationships with clients."
+                    </p>
+                </div>
+
+                <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 text-center space-y-2">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-2">
+                            <i data-lucide="award" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-white">2+</h3>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-mono">Years Experience</p>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 text-center space-y-2">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-2">
+                            <i data-lucide="check-circle" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-white">50+</h3>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-mono">Projects Done</p>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 text-center space-y-2">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-white">100%</h3>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-mono">Client Focus</p>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-white/10 text-center space-y-2">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-magenta-500/10 flex items-center justify-center text-pink-400 mb-2">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-white">AI</h3>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-mono">Driven Tools</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: MY SERVICES -->
+    <section id="services" class="py-24 relative z-10 bg-slate-950/40">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-3xl mx-auto text-center space-y-4 mb-16">
+                <span class="text-xs font-mono text-cyan-400 tracking-widest uppercase">03. Offerings</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-white">My Services</h2>
+                <p class="text-slate-400 text-sm sm:text-base">Comprehensive digital solutions tailored to elevate your business visual identity and online performance.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Service 1 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="layout" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Social Media Design</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Eye-catching social posts, branded content, and creative campaign designs that hold attention and build engagement.
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="image" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">YouTube Thumbnails</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        High-CTR, engaging thumbnails designed to stand out in feeds, attract attention, and dramatically encourage clicks.
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="code" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Website Design & Development</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Modern, fast, and fully responsive websites crafted to represent your business professionally and convert visitors.
+                    </p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="trending-up" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Digital Marketing</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Data-driven digital marketing strategies and social media advertising designed to improve brand reach and ROI.
+                    </p>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="bot" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">AI & Automation</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        AI-assisted creative workflows, smart automation, and intelligent tools to optimize modern business operations.
+                    </p>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-rose-500/20 to-pink-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="video" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Video Editing & Voice-Over</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Dynamic video content creation, clean visual pacing, and professional voice-over audio for digital campaigns.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: MY SKILLS -->
+    <section id="skills" class="py-24 relative z-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-3xl mx-auto text-center space-y-4 mb-16">
+                <span class="text-xs font-mono text-cyan-400 tracking-widest uppercase">04. Technical Capabilities</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-white">My Skills</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Category 1: Design -->
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+                    <div class="flex items-center gap-3 pb-3 border-b border-white/10">
+                        <i data-lucide="palette" class="w-5 h-5 text-cyan-400"></i>
+                        <h3 class="font-bold text-white text-lg">Design</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Social Media Design</span>
+                            <span class="text-cyan-400">Advanced</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-400 rounded-full w-[90%]"></div>
+                        </div>
+
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>YouTube Thumbnails</span>
+                            <span class="text-cyan-400">Expert</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-400 rounded-full w-[95%]"></div>
+                        </div>
+
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Brand Identity</span>
+                            <span class="text-cyan-400">Intermediate</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-400 rounded-full w-[85%]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 2: Development -->
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+                    <div class="flex items-center gap-3 pb-3 border-b border-white/10">
+                        <i data-lucide="code-2" class="w-5 h-5 text-blue-400"></i>
+                        <h3 class="font-bold text-white text-lg">Development</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Website Design & UI</span>
+                            <span class="text-blue-400">Advanced</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-400 rounded-full w-[90%]"></div>
+                        </div>
+
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Frontend Development</span>
+                            <span class="text-blue-400">Advanced</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-400 rounded-full w-[88%]"></div>
+                        </div>
+
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Backend Setup</span>
+                            <span class="text-blue-400">Intermediate</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-400 rounded-full w-[75%]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 3: Marketing -->
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+                    <div class="flex items-center gap-3 pb-3 border-b border-white/10">
+                        <i data-lucide="bar-chart-2" class="w-5 h-5 text-purple-400"></i>
+                        <h3 class="font-bold text-white text-lg">Marketing</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Digital Marketing</span>
+                            <span class="text-purple-400">Advanced</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-400 rounded-full w-[85%]"></div>
+                        </div>
+
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Social Media Marketing</span>
+                            <span class="text-purple-400">Advanced</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-400 rounded-full w-[90%]"></div>
+                        </div>
+
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Content Strategy</span>
+                            <span class="text-purple-400">Intermediate</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-400 rounded-full w-[80%]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 4: AI Technology -->
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+                    <div class="flex items-center gap-3 pb-3 border-b border-white/10">
+                        <i data-lucide="cpu" class="w-5 h-5 text-amber-400"></i>
+                        <h3 class="font-bold text-white text-lg">AI Technology</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>AI Generative Tools</span>
+                            <span class="text-amber-400">Expert</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-400 rounded-full w-[92%]"></div>
+                        </div>
+
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Creative AI Workflows</span>
+                            <span class="text-amber-400">Advanced</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-400 rounded-full w-[88%]"></div>
+                        </div>
+
+                        <div class="flex justify-between text-xs font-mono text-slate-300">
+                            <span>Business Automation</span>
+                            <span class="text-amber-400">Intermediate</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-400 rounded-full w-[78%]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 5: Content Creation -->
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4 lg:col-span-2">
+                    <div class="flex items-center gap-3 pb-3 border-b border-white/10">
+                        <i data-lucide="clapperboard" class="w-5 h-5 text-emerald-400"></i>
+                        <h3 class="font-bold text-white text-lg">Content & Audio</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-xs font-mono text-slate-300">
+                                <span>Video Editing</span>
+                                <span class="text-emerald-400">Advanced</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-emerald-400 rounded-full w-[85%]"></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-xs font-mono text-slate-300">
+                                <span>Voice-Over Production</span>
+                                <span class="text-emerald-400">Intermediate</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-emerald-400 rounded-full w-[80%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: FEATURED PROJECTS -->
+    <section id="projects" class="py-24 relative z-10 bg-slate-950/40 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-3xl mx-auto text-center space-y-4 mb-16">
+                <span class="text-xs font-mono text-cyan-400 tracking-widest uppercase">05. Portfolio</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-white">Featured Projects</h2>
+                <p class="text-slate-400 text-sm sm:text-base">A selection of recent design and development works crafted for clients.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Project 1 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between group">
+                    <div class="p-8 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">01</span>
+                            <span class="text-xs text-slate-400 font-mono">Website Design & Dev</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">Eye Specialist Website</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            A modern, responsive website concept for an eye specialist, featuring doctor information, medical services, patient reviews, FAQs, and appointment contact options.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white/5 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-slate-400 font-mono">Healthcare Web App</span>
+                        <a href="#contact" class="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300">
+                            <span>View Live Project</span>
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between group">
+                    <div class="p-8 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">02</span>
+                            <span class="text-xs text-slate-400 font-mono">Agency Branding</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-purple-400 transition-colors">ABDX — Grow Beyond Limits</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            A digital marketing agency project focused on professional branding, modern web design, creative marketing, and helping businesses grow online effectively.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white/5 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-slate-400 font-mono">Agency Brand Identity</span>
+                        <a href="#contact" class="inline-flex items-center gap-1.5 text-xs font-semibold text-purple-400 hover:text-purple-300">
+                            <span>View Live Project</span>
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between group">
+                    <div class="p-8 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">03</span>
+                            <span class="text-xs text-slate-400 font-mono">Creative Design</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">Social Media Branding</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            A collection of branded social media graphics and marketing content designed to maintain a consistent visual identity and make brands stand out in saturated feeds.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white/5 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-slate-400 font-mono">Design System</span>
+                        <a href="#contact" class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-400 hover:text-blue-300">
+                            <span>View Live Project</span>
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: WHY WORK WITH ME? -->
+    <section id="why-me" class="py-24 relative z-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-3xl mx-auto text-center space-y-4 mb-16">
+                <span class="text-xs font-mono text-cyan-400 tracking-widest uppercase">06. Value Proposition</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-white">Why Work With Me?</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 shrink-0">
+                        <i data-lucide="lightbulb" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white mb-1">Creative Approach</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">I turn complex ideas into visually attractive, practical, and user-centric designs.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 shrink-0">
+                        <i data-lucide="cpu" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white mb-1">Modern Tech Solutions</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">I seamlessly combine design principles, web development, and AI tools for speed.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 shrink-0">
+                        <i data-lucide="target" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white mb-1">Business-Focused</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">I focus on measurable outcomes that help brands build a stronger online presence.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white mb-1">Clear Communication</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">I value active listening, understanding client needs, and providing regular updates.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 flex items-start gap-4 md:col-span-2 lg:col-span-2">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 shrink-0">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white mb-1">Quality & Client Commitment</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">I aim to deliver high-quality professional work with attention to detail and build long-term relationships.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: CONTACT SECTION -->
+    <section id="contact" class="py-24 relative z-10 bg-slate-950/60 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-4xl mx-auto glass-panel p-8 sm:p-12 rounded-3xl border border-white/10 relative overflow-hidden">
+                <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="text-center space-y-4 mb-10">
+                    <span class="text-xs font-mono text-cyan-400 tracking-widest uppercase">07. Get In Touch</span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Let's Build Something Great Together</h2>
+                    <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+                        Have a project in mind? Let's discuss your ideas and find the right digital solution for your business.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-4">
+                    
+                    <!-- Direct Email Box -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/10 space-y-3">
+                        <div class="flex items-center gap-3 text-cyan-400">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                            <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Direct Email</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-2 bg-slate-950/80 p-3 rounded-xl border border-white/10">
+                            <span class="text-sm font-mono text-slate-200 truncate" id="email-text">marketerabdull39@gmail.com</span>
+                            <button id="copy-email-btn" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-mono border border-cyan-500/40 transition-colors flex items-center gap-1 shrink-0">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span id="copy-status">Copy</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Agency & Social Profiles -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/10 space-y-4">
+                        <div>
+                            <span class="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-1">Agency Website</span>
+                            <span class="text-lg font-bold text-white">ABDX — Grow Beyond Limits</span>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <a href="https://linkedin.com" target="_blank" class="p-3 rounded-xl bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-400 text-slate-300 border border-white/10 transition-colors">
+                                <i data-lucide="linkedin" class="w-5 h-5"></i>
+                            </a>
+                            <a href="https://instagram.com" target="_blank" class="p-3 rounded-xl bg-white/5 hover:bg-pink-500/20 hover:text-pink-400 text-slate-300 border border-white/10 transition-colors">
+                                <i data-lucide="instagram" class="w-5 h-5"></i>
+                            </a>
+                            <a href="mailto:marketerabdull39@gmail.com" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-semibold text-xs flex items-center gap-2 glow-button ml-auto">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                <span>Send Email</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 border-t border-white/5 text-center text-xs text-slate-500 font-mono">
+        <p>© 2026 Abdullah. All rights reserved. Designed & Developed with Three.js & Tailwind CSS.</p>
+    </footer>
+
+    <!-- INTERACTIVE 3D HOLOGRAM SCRIPT -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // Email Copy Functionality
+        const copyBtn = document.getElementById('copy-email-btn');
+        const emailText = document.getElementById('email-text').innerText;
+        const copyStatus = document.getElementById('copy-status');
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(emailText).then(() => {
+                copyStatus.innerText = 'Copied!';
+                setTimeout(() => copyStatus.innerText = 'Copy', 2000);
+            });
+        });
+
+        // THREE.JS 3D HOLOGRAM CARD SETUP
+        let scene, camera, renderer, cardGroup, cardMesh, particles, controls;
+        let isFlipped = false;
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+
+        const container = document.getElementById('three-container');
+
+        function init3D() {
+            scene = new THREE.Scene();
+
+            // Camera Setup
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 0, 8);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            // Orbit Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxDistance = 12;
+            controls.minDistance = 4;
+            controls.enablePan = false;
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
+
+            const cyanLight = new THREE.PointLight(0x00f2fe, 3, 20);
+            cyanLight.position.set(4, 4, 4);
+            scene.add(cyanLight);
+
+            const purpleLight = new THREE.PointLight(0x7f00ff, 3, 20);
+            purpleLight.position.set(-4, -4, 2);
+            scene.add(purpleLight);
+
+            // Parent Group for Card
+            cardGroup = new THREE.Group();
+            scene.add(cardGroup);
+
+            // CREATE HOLOGRAPHIC CANVAS TEXTURE
+            const cardTexture = createHologramTexture();
+
+            // Card Geometry & Glass Materials
+            const cardGeo = new THREE.BoxGeometry(3.6, 2.2, 0.08);
+
+            // Front Texture Material, Side Glass Material
+            const frontMat = new THREE.MeshPhysicalMaterial({
+                map: cardTexture,
+                transparent: true,
+                opacity: 0.95,
+                roughness: 0.1,
+                metalness: 0.2,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.1,
+                transmission: 0.2,
+                ior: 1.5,
+                emissive: 0x00f2fe,
+                emissiveIntensity: 0.15
+            });
+
+            const sideMat = new THREE.MeshPhysicalMaterial({
+                color: 0x00f2fe,
+                transparent: true,
+                opacity: 0.4,
+                roughness: 0.2,
+                metalness: 0.8
+            });
+
+            // Materials array [right, left, top, bottom, front, back]
+            const materials = [sideMat, sideMat, sideMat, sideMat, frontMat, frontMat];
+
+            cardMesh = new THREE.Mesh(cardGeo, materials);
+            cardGroup.add(cardMesh);
+
+            // Glowing Edge Wireframe Frame
+            const edgeGeo = new THREE.EdgesGeometry(cardGeo);
+            const edgeMat = new THREE.LineBasicMaterial({ color: 0x00f2fe, linewidth: 2, transparent: true, opacity: 0.8 });
+            const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
+            cardGroup.add(wireframe);
+
+            // Outer Floating Glow Ring
+            const ringGeo = new THREE.TorusGeometry(2.4, 0.02, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.3, wireframe: true });
+            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+            ringMesh.rotation.x = Math.PI / 2.5;
+            cardGroup.add(ringMesh);
+
+            // FLOATING HOLOGRAPHIC PARTICLES
+            const particleGeo = new THREE.BufferGeometry();
+            const particleCount = 120;
+            const posArray = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 10;
+            }
+
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particleMat = new THREE.PointsMaterial({
+                size: 0.04,
+                color: 0x00f2fe,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+
+            particles = new THREE.Points(particleGeo, particleMat);
+            scene.add(particles);
+
+            // Events
+            window.addEventListener('resize', onWindowResize);
+            container.addEventListener('mousemove', onMouseMove);
+
+            // Animate Loop
+            animate();
+        }
+
+        // CANVAS TEXTURE GENERATOR FOR HOLOGRAM CARD
+        function createHologramTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 628;
+            const ctx = canvas.getContext('2d');
+
+            // Dark Glass Background Gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, 1024, 628);
+            bgGrad.addColorStop(0, 'rgba(10, 15, 26, 0.95)');
+            bgGrad.addColorStop(1, 'rgba(18, 24, 40, 0.95)');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, 1024, 628);
+
+            // Holographic Cyber Lines
+            ctx.strokeStyle = 'rgba(0, 242, 254, 0.15)';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 1024; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, 628);
+                ctx.stroke();
+            }
+
+            // Outer Card Border Accent
+            ctx.strokeStyle = 'rgba(0, 242, 254, 0.6)';
+            ctx.lineWidth = 12;
+            ctx.strokeRect(20, 20, 984, 588);
+
+            // Top Status Badge
+            ctx.fillStyle = '#00f2fe';
+            ctx.font = 'bold 24px "JetBrains Mono", monospace';
+            ctx.fillText('⚡ 3D HOLOGRAPHIC VERIFIED', 60, 80);
+
+            // Main Name Header
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 72px "Inter", sans-serif';
+            ctx.fillText('ABDULLAH', 60, 200);
+
+            // Subtitle Title
+            ctx.fillStyle = '#00f2fe';
+            ctx.font = 'bold 36px "Inter", sans-serif';
+            ctx.fillText('DESIGNER & DEVELOPER', 60, 260);
+
+            // Divider Line
+            const lineGrad = ctx.createLinearGradient(60, 0, 960, 0);
+            lineGrad.addColorStop(0, '#00f2fe');
+            lineGrad.addColorStop(1, '#7f00ff');
+            ctx.fillStyle = lineGrad;
+            ctx.fillRect(60, 300, 904, 4);
+
+            // Details Section
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '28px "Inter", sans-serif';
+            ctx.fillText('Exp: 2+ Years in Digital Solutions', 60, 370);
+            ctx.fillText('Focus: Web Dev · Social Media · AI Tools', 60, 420);
+
+            // Bottom Brand Footer
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 30px "JetBrains Mono", monospace';
+            ctx.fillText('ABDX DIGITAL', 60, 540);
+
+            ctx.fillStyle = '#00f2fe';
+            ctx.font = '24px "JetBrains Mono", monospace';
+            ctx.fillText('marketerabdull39@gmail.com', 520, 540);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            return texture;
+        }
+
+        // Mouse Parallax Interaction
+        function onMouseMove(event) {
+            const rect = container.getBoundingClientRect();
+            mouseX = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
+            mouseY = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
+
+            if (!isFlipped) {
+                targetRotationY = mouseX * 0.4;
+                targetRotationX = -mouseY * 0.4;
+            }
+        }
+
+        // Window Resize Listener
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // Animation Loop
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            TWEEN.update();
+            controls.update();
+
+            if (!isFlipped) {
+                // Smooth Floating Motion
+                cardGroup.position.y = Math.sin(time * 0.002) * 0.15;
+
+                // Smooth Parallax Rotation
+                cardGroup.rotation.y += (targetRotationY - cardGroup.rotation.y) * 0.05;
+                cardGroup.rotation.x += (targetRotationX - cardGroup.rotation.x) * 0.05;
+            }
+
+            // Rotate Particles
+            if (particles) {
+                particles.rotation.y = time * 0.0002;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Card Flip Button Controller
+        const flipBtn = document.getElementById('flip-card-btn');
+        flipBtn.addEventListener('click', () => {
+            isFlipped = !isFlipped;
+
+            new TWEEN.Tween(cardGroup.rotation)
+                .to({ y: cardGroup.rotation.y + Math.PI }, 800)
+                .easing(TWEEN.Easing.Back.Out)
+                .start();
+        });
+
+        // Reset Camera Controller
+        const resetBtn = document.getElementById('reset-cam-btn');
+        resetBtn.addEventListener('click', () => {
+            isFlipped = false;
+            new TWEEN.Tween(cardGroup.rotation)
+                .to({ x: 0, y: 0, z: 0 }, 600)
+                .easing(TWEEN.Easing.Cubic.Out)
+                .start();
+
+            new TWEEN.Tween(camera.position)
+                .to({ x: 0, y: 0, z: 8 }, 600)
+                .easing(TWEEN.Easing.Cubic.Out)
+                .start();
+        });
+
+        // Initialize 3D Scene on Page Load
+        window.addEventListener('DOMContentLoaded', init3D);
+    </script>
+</body>
+</html>
